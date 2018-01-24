@@ -156,7 +156,7 @@ public class AccessibilityRelation {
     }
 
     public static String getRelationDeclaration(String normalizedRelation){
-        return "thf( " + normalizedRelation + "_type , type , ( " + normalizedRelation + ":" + w + ">" + w + ">$o) ).";
+        return ""; //thf( " + normalizedRelation + "_type , type , ( " + normalizedRelation + ":" + w + ">" + w + ">$o) ).";
     }
 
     public static String applyPropertyToRelation(AccessibilityRelationProperty p, String normalizedRelationSuffix){

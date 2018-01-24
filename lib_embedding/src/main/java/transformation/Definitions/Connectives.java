@@ -109,13 +109,13 @@ public class Connectives {
             return "" +
                     "thf( " + normalizedModalOperator + "_type , type , ( " + normalizedModalOperator + ": (" + w + ">$o)>" + w + ">$o) ).\n" +
                     "thf( " + normalizedModalOperator + "_def , definition , ( " + normalizedModalOperator + " = (" +
-                    "^ [A:" + w + ">$o,W:" + w + "] : ? [V:" + w + "] : ( (" + normalizedAccessibilityRelation + "@W@V) & (A@V) )" +
+                    "^ [A:" + w + ">$o,W:" + w + "] : ? [V:" + w + "] : ( A @ V )" +
                     "))).";
         }
         return "" +
                 "thf( " + normalizedModalOperator + "_type , type , ( " + normalizedModalOperator + ": (" + w + ">$o)>" + w + ">$o) ).\n" +
                 "thf( " + normalizedModalOperator + "_def , definition , ( " + normalizedModalOperator + " = (" +
-                "^ [A:" + w + ">$o,W:" + w + "] : ! [V:" + w + "] : ( (" + normalizedAccessibilityRelation + "@W@V) => (A@V) )" +
+                "^ [A:" + w + ">$o,W:" + w + "] : ! [V:" + w + "] : ( A @ V )" +
                 "))).";
     }
 
