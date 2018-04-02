@@ -3,10 +3,9 @@ import exceptions.ParseException;
 import exceptions.TransformationException;
 import org.junit.Test;
 import parser.ThfAstGen;
-import transformation.Definitions.AccessibilityRelation;
-import transformation.Definitions.Connectives;
 import transformation.ModalTransformator;
 import transformation.SemanticsAnalyzer;
+import transformation.Type;
 import util.tree.Node;
 
 import java.util.*;
@@ -41,9 +40,16 @@ public class TestSemanticsAnalyzer {
                 assertEquals(val_expected,val_actual);
             }
             assertEquals(t.domainToDomainType.keySet().size(),sa.domainToDomainType.keySet().size());
-            for (String key : t.domainToDomainType.keySet()){
+            System.out.println("=========");
+            t.domainToDomainType.forEach((k,v)-> System.out.println(k + ":" + v));
+            sa.domainToDomainType.forEach((k,v)-> System.out.println(k + ":" + v));
+            for (Type key : t.domainToDomainType.keySet()){
                 SemanticsAnalyzer.DomainType val_expected = t.domainToDomainType.get(key);
                 SemanticsAnalyzer.DomainType val_actual = sa.domainToDomainType.get(key);
+                System.out.println("TEST key:" + key);
+                System.out.println("exp:" + val_expected);
+                System.out.println("act:" + val_actual);
+                System.out.println(sa.domainToDomainType.get(key));
                 assertNotNull(val_actual);
                 assertEquals(val_expected,val_actual);
             }
@@ -59,14 +65,12 @@ public class TestSemanticsAnalyzer {
     }
 
     static{
-
-
         semantics = new ArrayList<>();
         SemanticsTest test;
         String input;
         Map<String, SemanticsAnalyzer.ConstantType> constantToConstantType;
         Map<String, SemanticsAnalyzer.ConsequenceType> axiomNameToConsequenceType;
-        Map<String, SemanticsAnalyzer.DomainType> domainToDomainType;
+        Map<Type, SemanticsAnalyzer.DomainType> domainToDomainType;
         Map<String, Set<SemanticsAnalyzer.AccessibilityRelationProperty>> modalityToAxiomList;
         Set<SemanticsAnalyzer.AccessibilityRelationProperty> relationProperties;
 
@@ -114,7 +118,7 @@ public class TestSemanticsAnalyzer {
         axiomNameToConsequenceType.put(SemanticsAnalyzer.consequenceDefault, SemanticsAnalyzer.ConsequenceType.GLOBAL);
         axiomNameToConsequenceType.put("myaxiom", SemanticsAnalyzer.ConsequenceType.LOCAL);
         domainToDomainType.put(SemanticsAnalyzer.domainDefault, SemanticsAnalyzer.DomainType.CONSTANT);
-        domainToDomainType.put("human", SemanticsAnalyzer.DomainType.VARYING);
+        domainToDomainType.put(Type.getTypeFromString("human"), SemanticsAnalyzer.DomainType.VARYING);
         modalityToAxiomList.put(SemanticsAnalyzer.modalitiesDefault,SemanticsAnalyzer.modal_systems.get("$modal_system_S5"));
         modalityToAxiomList.put("1",SemanticsAnalyzer.modal_systems.get("$modal_system_T"));
         test.name = "more involved";

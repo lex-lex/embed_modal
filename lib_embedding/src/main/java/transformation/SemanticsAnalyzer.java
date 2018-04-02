@@ -29,12 +29,12 @@ public class SemanticsAnalyzer {
 
     public Map<String, ConstantType> constantToConstantType;
     public Map<String, ConsequenceType> axiomNameToConsequenceType;
-    public Map<String, DomainType> domainToDomainType;
+    public Map<Type, DomainType> domainToDomainType;
     public Map<String, Set<AccessibilityRelationProperty>> modalityToAxiomList; // only suffix
 
     public static String constantDefault = "$default";
     public static String consequenceDefault = "$default";
-    public static String domainDefault = "$default";
+    public static Type domainDefault = Type.getTypeFromString("$default");
     public static String modalitiesDefault = "$default";
 
     static Map<String,AccessibilityRelationProperty> modal_axioms;
@@ -171,7 +171,7 @@ public class SemanticsAnalyzer {
         else{
             // find all entries of the list which means find all thf_formula_list rules
             List<Node> thf_formula_lists = node.getParent().getLastChild().dfsRuleAll("thf_formula_list");
-            thf_formula_lists.replaceAll(n->n.getFirstChild()); // always get the first child of a thf_formula_list
+            thf_formula_lists.replaceAll(Node::getFirstChild); // always get the first child of a thf_formula_list
             for (Node entry : thf_formula_lists){
 
                 // if default value
@@ -208,7 +208,7 @@ public class SemanticsAnalyzer {
         else{
             // find all entries of the list which means find all thf_formula_list rules
             List<Node> thf_formula_lists = node.getParent().getLastChild().dfsRuleAll("thf_formula_list");
-            thf_formula_lists.replaceAll(n->n.getFirstChild()); // always get the first child of a thf_formula_list
+            thf_formula_lists.replaceAll(Node::getFirstChild); // always get the first child of a thf_formula_list
             for (Node entry : thf_formula_lists){
 
                 // if default value
@@ -225,7 +225,8 @@ public class SemanticsAnalyzer {
                     }
                     else{
                         log.finest("Found domain " + rule.get().getFirstChild().toStringLeafs() + " with value " + rule.get().getLastChild().toStringLeafs() );
-                        this.putDomain(rule.get().getFirstChild().toStringLeafs(), rule.get().getLastChild().toStringLeafs());
+                        Type type = Type.getTypeFromString(rule.get().getFirstChild().toStringLeafs());
+                        this.putDomain(type, rule.get().getLastChild().toStringLeafs());
                     }
                 }
             }
@@ -245,7 +246,7 @@ public class SemanticsAnalyzer {
         else{
             // find all entries of the list which means find all thf_formula_list rules
             List<Node> thf_formula_lists = node.getParent().getLastChild().dfsRuleAll("thf_formula_list");
-            thf_formula_lists.replaceAll(n->n.getFirstChild()); // always get the first child of a thf_formula_list
+            thf_formula_lists.replaceAll(Node::getFirstChild); // always get the first child of a thf_formula_list
             for (Node entry : thf_formula_lists){
 
                 // if default value
@@ -319,13 +320,13 @@ public class SemanticsAnalyzer {
         constantToConstantType.put(name, t);
     }
 
-    private void putDomain(String name, String value){
+    private void putDomain(Type type, String value){
         DomainType t = domainTypes.getOrDefault(value,null);
         if (t == null){
             log.warning("Value " + value + " is not a valid value for domain semantics.");
             return;
         }
-        domainToDomainType.put(name, t);
+        domainToDomainType.put(type, t);
     }
 
     private void putConsequence(String name, String value){
@@ -338,7 +339,7 @@ public class SemanticsAnalyzer {
     }
 
     public static String accessibilityRelationPropertyListToString(Set<AccessibilityRelationProperty> set){
-        return "[" + String.join(",",set.stream().map(a->a.name()).toArray(String[]::new)) + "]";
+        return "[" + String.join(",",set.stream().map(Enum::name).toArray(String[]::new)) + "]";
     }
 
     private static Set<AccessibilityRelationProperty> resolveModalityEntry(String entry){
@@ -383,7 +384,7 @@ public class SemanticsAnalyzer {
                 log.finest("Found axiom " + p.name());
                 axioms.add(p);
             } else {
-                log.warning("This is not a valid axiom or system: " + p);
+                log.warning("This is not a valid axiom or system: " + a);
             }
         }
         if (!axioms.isEmpty()){
@@ -422,8 +423,8 @@ public class SemanticsAnalyzer {
         else{
             sb.append("N/A");
         }
-        for (String x : this.domainToDomainType.keySet()){
-            if (x.equals(domainDefault)) continue;
+        for (Type x : this.domainToDomainType.keySet()){
+            if (x == domainDefault) continue;
             sb.append(", ");
             sb.append(x);
             sb.append("=");
